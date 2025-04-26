@@ -11,6 +11,7 @@ struct ToDoListView: View {
     @StateObject private var viewModel = ToDoViewModel()
     @EnvironmentObject var authViewModel: AuthViewModel
     @State private var showAddItem = false
+    @State private var selectedItem: ToDoItem?
 
     var body: some View {
         NavigationView {
@@ -22,6 +23,16 @@ struct ToDoListView: View {
                         Text("Category: \(item.category)").font(.caption)
                         Text("Due: \(item.dueDate.formatted())").font(.caption2)
                     }
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        selectedItem = item
+                    }
+                    .swipeActions(edge: .trailing) {
+                        Button("Edit") {
+                            selectedItem = item
+                        }
+                        .tint(.blue)
+                    }
                 }
                 .onDelete { indexSet in
                     indexSet.forEach { viewModel.deleteItem(viewModel.items[$0]) }
@@ -31,6 +42,7 @@ struct ToDoListView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Add") {
+                        selectedItem = nil
                         showAddItem = true
                     }
                 }
@@ -45,10 +57,14 @@ struct ToDoListView: View {
                     viewModel.fetchItems(for: user.uid)
                 }
             }
+            .sheet(item: $selectedItem, onDismiss: { selectedItem = nil }) { item in
+                AddEditToDoView(viewModel: viewModel, userId: authViewModel.user?.uid ?? "", existingItem: item)
+            }
             .sheet(isPresented: $showAddItem) {
                 AddEditToDoView(viewModel: viewModel, userId: authViewModel.user?.uid ?? "")
             }
         }
     }
 }
+
 

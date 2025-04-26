@@ -25,9 +25,13 @@ class ToDoViewModel: ObservableObject {
         try? db.collection("todos").addDocument(from: item)
     }
 
+    func updateItem(_ item: ToDoItem) {
+        guard let id = item.id else { return }
+        try? db.collection("todos").document(id).setData(from: item)
+    }
+
     func deleteItem(_ item: ToDoItem) {
         guard let id = item.id else { return }
         db.collection("todos").document(id).delete()
     }
 }
-
