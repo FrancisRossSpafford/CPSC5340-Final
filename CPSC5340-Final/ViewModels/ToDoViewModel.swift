@@ -5,8 +5,8 @@
 //  Created by Ross Spafford on 4/26/25.
 //
 
-import Foundation
 import FirebaseFirestore
+
 
 class ToDoViewModel: ObservableObject {
     @Published var items: [ToDoItem] = []

@@ -32,10 +32,13 @@ struct ToDoListView: View {
                             selectedItem = item
                         }
                         .tint(.blue)
+
+                        Button(role: .destructive) {
+                            viewModel.deleteItem(item)
+                        } label: {
+                            Label("Delete", systemImage: "trash")
+                        }
                     }
-                }
-                .onDelete { indexSet in
-                    indexSet.forEach { viewModel.deleteItem(viewModel.items[$0]) }
                 }
             }
             .navigationTitle("My To-Dos")
