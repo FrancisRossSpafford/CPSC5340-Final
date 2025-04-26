@@ -6,12 +6,25 @@
 //
 
 import SwiftUI
+import Firebase
 
 @main
 struct CPSC5340_FinalApp: App {
+    @StateObject var authViewModel = AuthViewModel()
+
+    init() {
+        FirebaseApp.configure()
+    }
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            if authViewModel.user != nil {
+                ToDoListView()
+                    .environmentObject(authViewModel)
+            } else {
+                SignInView()
+                    .environmentObject(authViewModel)
+            }
         }
     }
 }
